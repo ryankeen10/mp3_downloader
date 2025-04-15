@@ -12,6 +12,7 @@ class Run:
             print(song_menu.get_albums_by_artist(artist))
         elif choice == "2":
             print(f"Searching for songs by {artist}...")
+            print(song_menu.get_songs_by_artist(artist))
             # Add code to search for songs
         else:
             print("Please enter 1 or 2.")
