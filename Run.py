@@ -1,13 +1,15 @@
+import CreateSongMenu
 import InputHandler
 
 
 class Run:
     def start(self):
+        song_menu = CreateSongMenu.CreateSongMenu()
         artist = InputHandler.InputHandler.get_artist()
         choice = InputHandler.InputHandler.album_or_song()
         if choice == "1":
             print(f"Searching for albums by {artist}...")
-            # Add code to search for albums
+            print(song_menu.get_albums_by_artist(artist))
         elif choice == "2":
             print(f"Searching for songs by {artist}...")
             # Add code to search for songs
