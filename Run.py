@@ -15,6 +15,7 @@ class Run:
             for key, value in song_menu.get_albums_by_artist(artist).items():
                 print(f"{key}: {value['name']}")
             input("Select an album number: ")
+            # Next time, create a list input and return the details of the selection
 
         elif choice == "2":
             print(f"Searching for songs by {artist}...")
@@ -22,5 +23,6 @@ class Run:
             for key, value in song_menu.get_songs_by_artist(artist).items():
                 print(f"{key}: {value}")
             input("Select a song number: ")
+            # Next time, create a list input and return the details of the selection
         else:
             print("Please enter 1 or 2.")
