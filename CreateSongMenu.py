@@ -7,26 +7,72 @@ from spotify_credentials import sp
 class CreateSongMenu:
 
     def get_songs_by_artist(self, artist_name):
-        results = sp.search(q="artist:" + artist_name, type="track", limit=50)
+        offset = 0
+        limit = 50
+        iteration = 1
+        track_list = []
 
-        # Print song details
-        # pprint(results["tracks"]["items"])
-        for idx, track in enumerate(
-            sorted(results["tracks"]["items"], key=lambda x: x["name"])
-        ):
-            if track["name"] is not None:
-                print(f"{idx+1}. {track['name']}")
-        # Add code that will make another api call if there are more than 50 songs
-        return ""
+        while True:
+            results = sp.search(
+                q="artist:" + artist_name,
+                type="track",
+                limit=limit,
+                offset=offset,
+            )
+
+            for idx, track in enumerate(results["tracks"]["items"]):
+                if track["name"] is not None:
+                    track_list.append(track["name"])
+
+            if (len(track_list)) == (limit * iteration):
+                offset = limit * iteration
+                iteration += 1
+            else:
+                break
+
+        return track_list
 
     def get_albums_by_artist(self, artist_name):
-        results = sp.search(q="artist:" + artist_name, type="album", limit=50)
-        pprint(results["albums"]["items"])
+        offset = 0
+        limit = 50
+        iteration = 1
 
-        # Print album details
-        for idx, album in enumerate(
-            sorted(results["albums"]["items"], key=lambda x: x["release_date"])
-        ):
-            print(f"{idx+1}. {album['name']}")
-        # Add code that will make another api call if there are more than 50 albums
-        return ""
+        # Step 1: Search for the artist to get their Spotify ID
+        artist_results = sp.search(q="artist:" + artist_name, type="artist", limit=1)
+        items = artist_results["artists"]["items"]
+
+        if not items:
+            print(f"No artist found for: {artist_name}")
+            return []
+
+        artist_id = items[0]["id"]
+        album_dict = {}
+
+        while True:
+            results = sp.artist_albums(
+                artist_id=artist_id,
+                limit=limit,
+                offset=offset,
+            )
+
+            albums = results["items"]
+            if not albums:
+                print(f"No albums found for: {artist_name}")
+                # break
+
+            for album in albums:
+                if album["album_type"] != "compilation":
+                    album_dict[album["name"]] = {
+                        "name": album["name"],
+                        "release_date": album["release_date"],
+                    }
+
+            if (len(album_dict)) == (limit * iteration):
+                offset = limit * iteration
+                iteration += 1
+            else:
+                break
+
+        sorted_dict = sorted(album_dict.items(), key=lambda x: x[1]["release_date"])
+        final_dict = {i + 1: value[1] for i, value in enumerate(sorted_dict)}
+        return final_dict
