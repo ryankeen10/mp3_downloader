@@ -6,32 +6,6 @@ from spotify_credentials import sp
 
 class CreateSongMenu:
 
-    def get_songs_by_artist(self, artist_name):
-        offset = 0
-        limit = 50
-        iteration = 1
-        track_list = []
-
-        while True:
-            results = sp.search(
-                q="artist:" + artist_name,
-                type="track",
-                limit=limit,
-                offset=offset,
-            )
-
-            for idx, track in enumerate(results["tracks"]["items"]):
-                if track["name"] is not None:
-                    track_list.append(track["name"])
-
-            if (len(track_list)) == (limit * iteration):
-                offset = limit * iteration
-                iteration += 1
-            else:
-                break
-
-        return track_list
-
     def get_albums_by_artist(self, artist_name):
         offset = 0
         limit = 50
@@ -62,7 +36,8 @@ class CreateSongMenu:
 
             for album in albums:
                 if album["album_type"] != "compilation":
-                    album_dict[album["name"]] = {
+                    album_dict[album["id"]] = {
+                        "id": album["id"],
                         "name": album["name"],
                         "release_date": album["release_date"],
                     }
@@ -76,3 +51,17 @@ class CreateSongMenu:
         sorted_dict = sorted(album_dict.items(), key=lambda x: x[1]["release_date"])
         final_dict = {i + 1: value[1] for i, value in enumerate(sorted_dict)}
         return final_dict
+
+    def get_songs_by_artist(self, artist_name):
+        album_dict = self.get_albums_by_artist(artist_name)
+        # print(album_dict)
+        track_set = set()
+        for value in album_dict.values():
+            album_id = value["id"]
+            tracks = sp.album_tracks(album_id=album_id)
+            for track in tracks["items"]:
+                track_set.add(track["name"])
+
+        sorted_track_list = sorted(list(track_set))
+        track_dict = {i + 1: track for i, track in enumerate(sorted_track_list)}
+        return track_dict

@@ -18,7 +18,9 @@ class Run:
 
         elif choice == "2":
             print(f"Searching for songs by {artist}...")
-            pprint(song_menu.get_songs_by_artist(artist))
-            # Add code to search for songs
+            print("Song list: \t")
+            for key, value in song_menu.get_songs_by_artist(artist).items():
+                print(f"{key}: {value}")
+            input("Select a song number: ")
         else:
             print("Please enter 1 or 2.")
