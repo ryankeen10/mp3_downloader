@@ -35,7 +35,12 @@ class CreateSongMenu:
                 # break
 
             for album in albums:
-                if album["album_type"] != "compilation":
+                # Ensure artist is the primary artist (first listed)
+                if (
+                    album["album_type"] != "compilation"
+                    and album["artists"]
+                    and album["artists"][0]["id"] == artist_id
+                ):
                     album_dict[album["id"]] = {
                         "id": album["id"],
                         "name": album["name"],
@@ -54,7 +59,6 @@ class CreateSongMenu:
 
     def get_songs_by_artist(self, artist_name):
         album_dict = self.get_albums_by_artist(artist_name)
-        # print(album_dict)
         track_set = set()
         for value in album_dict.values():
             album_id = value["id"]
