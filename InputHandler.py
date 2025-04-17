@@ -4,7 +4,7 @@ class InputHandler:
 
     def album_or_song():
         return input(
-            "Would you like to search for \n\t1. album\n\t2. song\n(Enter 1 or 2): "
+            "\nWould you like to search for \n\t1. album\n\t2. song\n(Enter 1 or 2): "
         )
 
     # def get_path():

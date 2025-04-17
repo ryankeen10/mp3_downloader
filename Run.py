@@ -10,19 +10,24 @@ class Run:
         artist = InputHandler.InputHandler.get_artist()
         choice = InputHandler.InputHandler.album_or_song()
         if choice == "1":
-            print(f"Searching for albums by {artist}...\t")
-            print("Album list: \t")
-            for key, value in song_menu.get_albums_by_artist(artist).items():
-                print(f"{key}: {value['name']}")
-            input("Select an album number: ")
+            print(f"\nSearching for albums by {artist}...\n")
+            print("Album list:")
+            for key, value in song_menu.get_album_data(artist).items():
+                print(f"\t{key}: {value['name']}")
+            input("\nSelect an album number: ")
             # Next time, create a list input and return the details of the selection
 
         elif choice == "2":
-            print(f"Searching for songs by {artist}...")
-            print("Song list: \t")
-            for key, value in song_menu.get_songs_by_artist(artist).items():
-                print(f"{key}: {value}")
-            input("Select a song number: ")
+            track_list = []
+
+            for album in song_menu.get_album_data(artist).values():
+                track_list.extend(album.get("tracks", []))
+            track_list_sorted = sorted(set(track_list))
+            print(f"\nSearching for songs by {artist}..\n")
+            print("Song list:")
+            for index, value in enumerate(track_list_sorted):
+                print(f"\t{index + 1}: {value}")
+            input("\nSelect a song number: ")
             # Next time, create a list input and return the details of the selection
         else:
             print("Please enter 1 or 2.")
