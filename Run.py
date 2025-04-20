@@ -20,6 +20,9 @@ class Run:
                 "\nSelect the album numbers you want to download, separated by commas: "
             )
             selection_nums = selection_nums.split(",")
+            selection_nums = [
+                num.strip() for num in selection_nums if num.strip().isdigit()
+            ]
             pprint(selection_nums)
             # for num in selection_nums:
             #     num = num.strip()
@@ -42,6 +45,9 @@ class Run:
                 "\nSelect the song numbers you want to download, separated by commas: "
             )
             selection_nums = selection_nums.split(",")
+            selection_nums = [
+                num.strip() for num in selection_nums if num.strip().isdigit()
+            ]
             pprint(selection_nums)
             # Next time, create a list input and return the details of the selection
         else:
