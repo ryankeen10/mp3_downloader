@@ -5,13 +5,9 @@ from spotify_credentials import sp
 
 
 class CreateSongMenu:
+    youtube_search_dict = {}
 
-    def get_album_data(self, artist_name):
-        offset = 0
-        limit = 50
-        iteration = 1
-
-        # Step 1: Search for the artist to get their Spotify ID
+    def call_spotify_api(self, artist_name, offset, limit):
         artist_results = sp.search(q="artist:" + artist_name, type="artist", limit=1)
         items = artist_results["artists"]["items"]
 
@@ -53,8 +49,8 @@ class CreateSongMenu:
             # pprint(album_dict)
 
             # If the api limit has been reached, call again with new offset
-            if (len(album_dict)) == (limit * iteration):
-                offset = limit * iteration
+            if (len(album_dict)) == (limit * self.iteration):
+                offset = limit * self.iteration
                 iteration += 1
             else:
                 break
@@ -63,3 +59,17 @@ class CreateSongMenu:
         final_dict = {i + 1: value[1] for i, value in enumerate(sorted_dict)}
 
         return final_dict
+
+    def get_album_data(self, artist_name):
+        self.offset = 0
+        self.limit = 50
+        self.iteration = 1
+
+        input_collected = False
+        while not input_collected:
+            artist_data = self.call_spotify_api(artist_name, self.offset, self.limit)
+            if not artist_data:
+                print("No albums found. Please try a different artist.")
+            else:
+                input_collected = True
+        return artist_data
