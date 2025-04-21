@@ -4,7 +4,7 @@ import CreateSongMenu
 import InputHandler
 
 
-class Run:
+class process_input:
     def start(self):
         song_menu = CreateSongMenu.CreateSongMenu()
         artist = InputHandler.InputHandler.get_artist()
