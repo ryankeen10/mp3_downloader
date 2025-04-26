@@ -7,13 +7,12 @@ from googleapiclient.errors import HttpError
 import ProcessInput
 from youtube_credentials import DEVELOPER_KEY
 
-YOUTUBE_API_SERVICE_NAME = "youtube"
-YOUTUBE_API_VERSION = "v3"
-
 
 class CallYoutube:
 
     YOUTUBE_URL_PREFIX = "https://www.youtube.com/watch?v="
+    YOUTUBE_API_SERVICE_NAME = "youtube"
+    YOUTUBE_API_VERSION = "v3"
 
     def __init__(self, search_dict: dict):
         self.search_dict = search_dict
@@ -24,7 +23,9 @@ class CallYoutube:
         return_list = []
 
         youtube = build(
-            YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY
+            self.YOUTUBE_API_SERVICE_NAME,
+            self.YOUTUBE_API_VERSION,
+            developerKey=DEVELOPER_KEY,
         )
 
         # Call the search.list method to retrieve results matching the specified query term.
