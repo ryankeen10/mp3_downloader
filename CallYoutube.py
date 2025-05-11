@@ -20,7 +20,7 @@ class CallYoutube:
         self.songs = search_dict.get("songs", [])
 
     def search_youtube(self, artist, song) -> list:
-        return_list = []
+        url_list = []
 
         youtube = build(
             self.YOUTUBE_API_SERVICE_NAME,
@@ -42,10 +42,10 @@ class CallYoutube:
                 if video_id:
                     print(f"Title: {title}, Video ID: {video_id}")
                     url = f"{self.YOUTUBE_URL_PREFIX}{video_id}"
-                    return_list.append(url)
+                    url_list.append(url)
                     break
 
-        return return_list
+        return url_list, artist, song
 
 
 test_case = CallYoutube({"artist": "Hozier", "songs": []})
