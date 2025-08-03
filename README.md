@@ -21,8 +21,8 @@ A Python application for downloading YouTube videos and converting them to MP3 f
 - ffmpeg (for audio processing)  
 - mutagen (for ID3 tag metadata)
 - spotipy (for enhanced Spotify metadata)
-- Google API key for YouTube search (optional - only needed for search functionality)
-- Spotify API credentials (optional - for enhanced metadata)
+- **Google API key for YouTube search (REQUIRED - app will not work without this)**
+- **Spotify API credentials (REQUIRED - app will not work without this)**
 
 ## Installation
 
@@ -43,7 +43,9 @@ pip install yt-dlp google-api-python-client
    - On Ubuntu: `sudo apt install ffmpeg`
    - On Windows: Download from https://ffmpeg.org/
 
-5. (Optional) Set up your YouTube API credentials in `youtube_credentials.py` for search functionality
+5. **REQUIRED: Set up API credentials** - See [SETUP.md](SETUP.md) for detailed instructions:
+   - YouTube Data API key
+   - Spotify API credentials
 
 ## Usage
 

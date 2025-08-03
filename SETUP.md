@@ -1,8 +1,12 @@
 # 🔑 API Setup Instructions
 
-## Required for Full Functionality
+## Required Credentials
 
-### YouTube Data API (Required for search)
+Both API credentials are **required** for the application to function properly.
+
+### YouTube Data API (Required)
+**Without this, the app cannot search for videos and will not work.**
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project or select existing
 3. Enable "YouTube Data API v3"
@@ -10,7 +14,9 @@
 5. Copy `youtube_credentials.py.template` to `youtube_credentials.py`
 6. Replace `your_youtube_api_key_here` with your actual API key
 
-### Spotify API (Required for enhanced metadata)
+### Spotify API (Required)
+**Without this, the app cannot search for artists/albums and will not work.**
+
 1. Go to [Spotify for Developers](https://developer.spotify.com/dashboard)
 2. Log in and create an app
 3. Copy Client ID and Client Secret
