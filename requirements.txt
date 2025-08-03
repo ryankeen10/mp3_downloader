@@ -1,0 +1,2 @@
+yt-dlp>=2023.7.6
+google-api-python-client>=2.0.0

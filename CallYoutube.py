@@ -1,5 +1,6 @@
 import argparse
 from pprint import pprint
+import os
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -18,19 +19,19 @@ class CallYoutube:
         self.search_dict = search_dict
         self.artist = search_dict.get("artist", "")
         self.songs = search_dict.get("songs", [])
-
-    def search_youtube(self, artist, song) -> list:
-        url_list = []
-
-        youtube = build(
+        self.youtube = build(
             self.YOUTUBE_API_SERVICE_NAME,
             self.YOUTUBE_API_VERSION,
             developerKey=DEVELOPER_KEY,
         )
 
+    def search_youtube(self, artist, song) -> tuple:
+        """Search YouTube for a specific artist and song"""
+        url_list = []
+
         # Call the search.list method to retrieve results matching the specified query term.
         search_response = (
-            youtube.search().list(q=f"{artist} - {song}", part="snippet").execute()
+            self.youtube.search().list(q=f"{artist} - {song}", part="snippet").execute()
         )
         response_items = search_response.get("items", [])
 
@@ -46,8 +47,67 @@ class CallYoutube:
                     break
 
         return url_list, artist, song
+    
+    def process_songs(self, download=True):
+        """
+        Process all songs in the search_dict and find YouTube URLs
+        
+        Args:
+            download (bool): Deprecated - downloading is now handled separately
+        """
+        if not self.songs:
+            print("No songs to process.")
+            return []
+        
+        results = []
+        print(f"\n🔍 Searching YouTube for {len(self.songs)} songs by {self.artist}...")
+        
+        for i, song in enumerate(self.songs, 1):
+            print(f"\n📋 Processing song {i}/{len(self.songs)}: {song}")
+            urls, artist, song_name = self.search_youtube(self.artist, song)
+            results.append((urls, artist, song_name))
+            
+            if urls:
+                print(f"✅ Found: {urls[0]}")
+            else:
+                print("❌ No video found")
+            
+            # Ask if user wants to continue after each song (except the last one)
+            if i < len(self.songs):
+                continue_input = input("\nContinue to next song? (y/n): ").lower()
+                if continue_input != 'y' and continue_input != 'yes':
+                    print("Stopping song processing.")
+                    break
+        
+        return results
 
 
-test_case = CallYoutube({"artist": "Hozier", "songs": []})
-url = test_case.search_youtube("hozier", "jackie and wilson")
-print(url)
+if __name__ == "__main__":
+    # Initialize the ProcessInput class
+    processor = ProcessInput.process_input()
+    
+    # Get user selections
+    search_dict = processor.start()
+    
+    if search_dict:
+        # Initialize YouTube searcher with the search dictionary
+        youtube_searcher = CallYoutube(search_dict)
+        
+        # Ask user if they want to download MP3s
+        download_mp3 = input("\nDo you want to download MP3s for these songs? (y/n): ").lower() in ['y', 'yes']
+        
+        # Process all songs
+        results = youtube_searcher.process_songs(download=download_mp3)
+        
+        # Display final results
+        if results:
+            print("\nSummary of YouTube search results:")
+            for i, (urls, artist, song) in enumerate(results, 1):
+                if urls:
+                    print(f"{i}. {artist} - {song}: {urls[0]}")
+                else:
+                    print(f"{i}. {artist} - {song}: No video found")
+        else:
+            print("No YouTube videos were found or the process was canceled.")
+    else:
+        print("No search criteria provided. Exiting.")
