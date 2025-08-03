@@ -77,15 +77,15 @@ Your downloads are saved to:
 ## Metadata Tags
 
 Each MP3 file gets professional ID3 tags:
-- **Artist**: From Spotify data or your input
-- **Title**: Song name
-- **Album**: Album name (when available)
-- **Year**: Release year from Spotify
-- **Genre**: Music genre from Spotify
-- **Track Number**: Position in album
+- **Artist** (TPE1/TPE2): From Spotify data or your input
+- **Title** (TIT2): Song name
+- **Album** (TALB): Album name (when available)
+- **Year** (TDRC): Release year from Spotify (when available)
+
+**Note**: Genre and track number are intentionally left blank to avoid issues with Apple Music and other players that prefer you to set these manually.
 
 Perfect for:
-- Apple Music
+- Apple Music (will display artist, title, album, year)
 - Spotify (local files)
 - Any music player that reads ID3 tags
 

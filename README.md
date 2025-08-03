@@ -108,12 +108,12 @@ All downloaded MP3 files include professional-quality ID3 tags with **Spotify-en
 - **Professional Quality**: Results in properly tagged files that integrate perfectly with music libraries
 
 ### Metadata Fields
-- **Artist**: Enhanced from Spotify or user input
-- **Title**: Cleaned and enhanced track name
-- **Album**: From Spotify or user-provided album name
-- **Genre**: Actual genre from Spotify (no more generic "Downloaded" tags!)
-- **Year**: Accurate release year from Spotify
-- **Track Number**: Position in album when available
+- **Artist** (TPE1/TPE2): Enhanced from Spotify or user input
+- **Title** (TIT2): Cleaned and enhanced track name  
+- **Album** (TALB): From Spotify or user-provided album name
+- **Year** (TDRC): Accurate release year from Spotify (when available)
+
+**Note**: Genre and track number are intentionally left blank for better compatibility with Apple Music and other players that prefer manual genre/playlist organization.
 
 ### Examples
 
