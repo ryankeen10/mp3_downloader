@@ -44,6 +44,7 @@ test_downloads/
 ehthumbs.db
 Thumbs.db
 
-# API Keys
+# API Keys and Credentials
 *credentials.py
 rapidapi_config.json
+.spotify_cache

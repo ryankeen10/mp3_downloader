@@ -17,3 +17,8 @@ AUDIO_QUALITY = "192K"
 
 # Whether to create artist subfolders (True/False)
 USE_ARTIST_FOLDERS = True
+
+# ID3 Tag Configuration
+USE_SPOTIFY_METADATA = True   # Use cached Spotify metadata from user selections (no additional API calls)
+FALLBACK_GENRE = None         # Default genre if not found (None = leave blank)
+FALLBACK_YEAR = None          # Default year if not found (None = leave blank)

@@ -26,24 +26,36 @@ if __name__ == "__main__":
             
             print(f"\n🎵 Starting download of {len(results)} songs...")
             
-            # Prepare download list
+            # Ask if all songs are from the same album
+            album_name = None
+            if len(results) > 1:
+                same_album = input("Are all these songs from the same album? (y/n): ").lower() in ['y', 'yes']
+                if same_album:
+                    album_name = input("Enter the album name: ").strip()
+                    album_name = album_name if album_name else None
+            
+            # Prepare download list with Spotify metadata
             download_list = []
-            for urls, artist, song in results:
+            for urls, artist, song, spotify_metadata in results:
                 if urls:  # If we found a YouTube URL
-                    download_list.append((urls[0], artist, song))
+                    # Use album from Spotify metadata if available, otherwise use user input
+                    song_album = spotify_metadata.get('album') or album_name
+                    download_list.append((urls[0], artist, song, song_album, spotify_metadata))
             
             if download_list:
-                downloaded_files = downloader.download_multiple(download_list)
+                downloaded_files = downloader.download_multiple_with_metadata(download_list)
                 print(f"\n🎉 Downloaded {len(downloaded_files)} MP3 files successfully!")
+                print("🏷️  Files enhanced with Spotify metadata!")
             else:
                 print("❌ No valid YouTube URLs found for download")
         
         # Display final results
         if results:
             print("\n📋 Summary of results:")
-            for i, (urls, artist, song) in enumerate(results, 1):
+            for i, (urls, artist, song, spotify_metadata) in enumerate(results, 1):
                 if urls:
-                    print(f"{i}. {artist} - {song}: ✅ Found")
+                    album_info = f" (Album: {spotify_metadata.get('album')})" if spotify_metadata.get('album') else ""
+                    print(f"{i}. {artist} - {song}{album_info}: ✅ Found")
                 else:
                     print(f"{i}. {artist} - {song}: ❌ No video found")
             

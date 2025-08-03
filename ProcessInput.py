@@ -67,20 +67,38 @@ class process_input:
                         print("No valid albums selected. Please try again.")
                         continue
                     
-                    # Create a unique list of the selected songs from the selected albums
-                    song_list = []
+                    # Create a list of selected songs with their album metadata
+                    selected_songs_with_metadata = []
                     for value in album_dict.values():
                         if value in album_list:
-                            song_list.extend(value["tracks"])
-                    song_list = list(set(song_list))  # Remove duplicates
+                            for track_name in value["tracks"]:
+                                selected_songs_with_metadata.append({
+                                    'name': track_name,
+                                    'album': value['name'],
+                                    'release_date': value['release_date'],
+                                    'album_id': value['id']
+                                })
+                    
+                    # Remove duplicates based on song name
+                    seen_songs = set()
+                    unique_songs = []
+                    for song in selected_songs_with_metadata:
+                        if song['name'] not in seen_songs:
+                            unique_songs.append(song)
+                            seen_songs.add(song['name'])
+                    selected_songs_with_metadata = unique_songs
                     
                     # Display the selected albums
                     print("Attempting to download the following albums:")
                     for album in album_list:
                         print(f"\t{album['name']}")
                     
-                    # Create a dictionary with song info which will be passed to the downloader
-                    search_dict = {"artist": artist_info['name'], "songs": song_list}
+                    # Create a dictionary with song info including Spotify metadata
+                    search_dict = {
+                        "artist": artist_info['name'], 
+                        "artist_id": artist_info['id'],
+                        "songs": selected_songs_with_metadata
+                    }
                     return search_dict
                 
                 # Process song choice
@@ -105,19 +123,34 @@ class process_input:
                     # Process song selection
                     selection_nums = selection_input.split(",")
                     selection_nums = [num.strip() for num in selection_nums if num.strip().isdigit()]
-                    song_list = [songs_dict[int(num)]['name'] for num in selection_nums if int(num) in songs_dict]
                     
-                    if not song_list:
+                    # Collect selected songs with their Spotify metadata
+                    selected_songs_with_metadata = []
+                    for num in selection_nums:
+                        if int(num) in songs_dict:
+                            song_data = songs_dict[int(num)]
+                            selected_songs_with_metadata.append({
+                                'name': song_data['name'],
+                                'album': song_data['album'],
+                                'release_date': song_data['release_date'],
+                                'spotify_id': song_data['id']
+                            })
+                    
+                    if not selected_songs_with_metadata:
                         print("No valid songs selected. Please try again.")
                         continue
                     
                     # Display the selected songs
                     print("Attempting to download the following songs:")
-                    for song in song_list:
-                        print(f"\t{song}")
+                    for song in selected_songs_with_metadata:
+                        print(f"\t{song['name']}")
                     
-                    # Create a dictionary with song info which will be passed to the downloader
-                    search_dict = {"artist": artist_info['name'], "songs": song_list}
+                    # Create a dictionary with song info including Spotify metadata
+                    search_dict = {
+                        "artist": artist_info['name'], 
+                        "artist_id": artist_info['id'],
+                        "songs": selected_songs_with_metadata
+                    }
                     return search_dict
                 
                 else:

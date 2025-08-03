@@ -54,6 +54,9 @@ class CallYoutube:
         
         Args:
             download (bool): Deprecated - downloading is now handled separately
+            
+        Returns:
+            list: List of tuples (urls, artist, song_name, spotify_metadata)
         """
         if not self.songs:
             print("No songs to process.")
@@ -62,10 +65,23 @@ class CallYoutube:
         results = []
         print(f"\n🔍 Searching YouTube for {len(self.songs)} songs by {self.artist}...")
         
-        for i, song in enumerate(self.songs, 1):
-            print(f"\n📋 Processing song {i}/{len(self.songs)}: {song}")
-            urls, artist, song_name = self.search_youtube(self.artist, song)
-            results.append((urls, artist, song_name))
+        for i, song_data in enumerate(self.songs, 1):
+            # Handle both old string format and new metadata format
+            if isinstance(song_data, str):
+                song_name = song_data
+                spotify_metadata = {}
+            else:
+                song_name = song_data.get('name', song_data)
+                spotify_metadata = {
+                    'album': song_data.get('album'),
+                    'release_date': song_data.get('release_date'),
+                    'spotify_id': song_data.get('spotify_id'),
+                    'album_id': song_data.get('album_id')
+                }
+            
+            print(f"\n📋 Processing song {i}/{len(self.songs)}: {song_name}")
+            urls, artist, _ = self.search_youtube(self.artist, song_name)
+            results.append((urls, artist, song_name, spotify_metadata))
             
             if urls:
                 print(f"✅ Found: {urls[0]}")
