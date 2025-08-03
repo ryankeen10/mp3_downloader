@@ -52,7 +52,7 @@ class CreateSongMenu:
         album_dict = {}
 
         while True:
-            results = sp.artist_albums(
+            results = self.sp.artist_albums(
                 artist_id=artist_id,
                 limit=limit,
                 offset=offset,
@@ -64,7 +64,7 @@ class CreateSongMenu:
                 break
 
         while True:
-            results = sp.artist_albums(
+            results = self.sp.artist_albums(
                 artist_id=artist_id,
                 limit=limit,
                 offset=offset,
@@ -83,7 +83,7 @@ class CreateSongMenu:
                     and album["artists"][0]["id"] == artist_id
                 ):
                     # Create set of tracks for each record
-                    tracks = sp.album_tracks(album_id=album["id"])["items"]
+                    tracks = self.sp.album_tracks(album_id=album["id"])["items"]
                     track_names = [track["name"] for track in tracks]
                     album_dict[album["id"]] = {
                         "id": album["id"],
@@ -128,7 +128,7 @@ class CreateSongMenu:
         album_dict = {}
         
         while True:
-            results = sp.artist_albums(
+            results = self.sp.artist_albums(
                 artist_id=artist_id,
                 limit=self.limit,
                 offset=self.offset,
@@ -146,7 +146,7 @@ class CreateSongMenu:
                     and album["artists"][0]["id"] == artist_id
                 ):
                     # Create set of tracks for each record
-                    tracks = sp.album_tracks(album_id=album["id"])["items"]
+                    tracks = self.sp.album_tracks(album_id=album["id"])["items"]
                     track_names = [track["name"] for track in tracks]
                     album_dict[album["id"]] = {
                         "id": album["id"],
@@ -173,7 +173,7 @@ class CreateSongMenu:
         Returns the selected artist name.
         """
         # Search for artists matching the name
-        artist_results = sp.search(q="artist:" + artist_name, type="artist", limit=3)
+        artist_results = self.sp.search(q="artist:" + artist_name, type="artist", limit=3)
         items = artist_results["artists"]["items"]
         if not items:
             print(f"No artist found for: {artist_name}")
@@ -204,7 +204,7 @@ class CreateSongMenu:
         else:
             # For backward compatibility, search for the artist
             artist_name = artist_info
-            artist_results = sp.search(q="artist:" + artist_name, type="artist", limit=1)
+            artist_results = self.sp.search(q="artist:" + artist_name, type="artist", limit=1)
             items = artist_results["artists"]["items"]
             if not items:
                 print(f"No artist found for: {artist_name}")
@@ -217,7 +217,7 @@ class CreateSongMenu:
         limit = 50
         
         while True:
-            results = sp.artist_albums(
+            results = self.sp.artist_albums(
                 artist_id=artist_id,
                 album_type='album,single',
                 limit=limit,
@@ -242,7 +242,7 @@ class CreateSongMenu:
         for album in all_albums:
             # Only include albums where this artist is the primary artist
             if album['artists'] and album['artists'][0]['id'] == artist_id:
-                album_tracks = sp.album_tracks(album['id'])
+                album_tracks = self.sp.album_tracks(album['id'])
                 for track in album_tracks['items']:
                     # Only add if we haven't seen this track ID before
                     if track['id'] not in track_ids:
