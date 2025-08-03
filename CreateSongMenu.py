@@ -1,14 +1,28 @@
 from pprint import pprint
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 
 import InputHandler
-from spotify_credentials import sp
+from credentials_helper import get_spotify_credentials
 
 
 class CreateSongMenu:
     youtube_search_dict = {}
+    
+    def __init__(self):
+        # Initialize Spotify client safely
+        client_id, client_secret = get_spotify_credentials()
+        if not client_id or not client_secret:
+            raise ValueError("Spotify credentials not available. Please check your credentials.")
+        
+        client_credentials_manager = SpotifyClientCredentials(
+            client_id=client_id,
+            client_secret=client_secret
+        )
+        self.sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
     def call_spotify_api(self, artist_name, offset, limit):
-        artist_results = sp.search(q="artist:" + artist_name, type="artist", limit=1)
+        artist_results = self.sp.search(q="artist:" + artist_name, type="artist", limit=1)
         items = artist_results["artists"]["items"][:3]
         if not items:
             print(f"No artist found for: {artist_name}")

@@ -28,7 +28,9 @@ except ImportError:
 
 # Import for Spotify metadata
 try:
-    from spotify_credentials import sp
+    import spotipy
+    from spotipy.oauth2 import SpotifyClientCredentials
+    from credentials_helper import get_spotify_credentials
     SPOTIFY_AVAILABLE = True
 except ImportError:
     SPOTIFY_AVAILABLE = False

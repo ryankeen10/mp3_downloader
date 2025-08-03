@@ -6,7 +6,11 @@ import InputHandler
 
 class process_input:
     def start(self):
-        song_menu = CreateSongMenu.CreateSongMenu()
+        try:
+            song_menu = CreateSongMenu.CreateSongMenu()
+        except ValueError as e:
+            print(f"❌ Error initializing Spotify: {e}")
+            return None
         
         while True:  # Main loop for the entire process
             # Get artist name input

@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 import ProcessInput
-from youtube_credentials import DEVELOPER_KEY
+from credentials_helper import get_youtube_api_key
 
 
 class CallYoutube:
@@ -15,14 +15,19 @@ class CallYoutube:
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"
 
-    def __init__(self, search_dict: dict):
-        self.search_dict = search_dict
+    def __init__(self, search_dict):
         self.artist = search_dict.get("artist", "")
         self.songs = search_dict.get("songs", [])
+        
+        # Get API key safely
+        api_key = get_youtube_api_key()
+        if not api_key:
+            raise ValueError("YouTube API key not available. Please check your credentials.")
+        
         self.youtube = build(
             self.YOUTUBE_API_SERVICE_NAME,
             self.YOUTUBE_API_VERSION,
-            developerKey=DEVELOPER_KEY,
+            developerKey=api_key,
         )
 
     def search_youtube(self, artist, song) -> tuple:

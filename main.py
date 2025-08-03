@@ -1,9 +1,18 @@
 from ProcessInput import process_input
 from CallYoutube import CallYoutube
 from mp3_downloader import MP3Downloader
+from credentials_helper import check_credentials
 
 if __name__ == "__main__":
-    print("=== MP3 Downloader ===")
+    print("🎵 YouTube to MP3 Downloader")
+    print("=" * 40)
+    
+    # Check credentials before starting
+    if not check_credentials():
+        print("\n🔧 Please set up your API credentials first!")
+        print("📖 See SETUP.md for instructions")
+        exit(1)
+    
     print("This program lets you search for artists, albums, and songs, then find them on YouTube and convert them to MP3.")
     
     # Get user selections for artist and songs
