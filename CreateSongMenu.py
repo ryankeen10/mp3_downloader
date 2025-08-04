@@ -172,9 +172,45 @@ class CreateSongMenu:
         Displays a list of artists matching the search query and lets the user select one.
         Returns the selected artist name.
         """
-        # Search for artists matching the name
-        artist_results = self.sp.search(q="artist:" + artist_name, type="artist", limit=3)
-        items = artist_results["artists"]["items"]
+        print(f"🔍 Searching for artist: {artist_name}")
+        
+        # Try different search strategies for better relevance
+        all_items = []
+        search_strategies = [
+            f'artist:"{artist_name}"',  # Exact artist name match
+            f'artist:{artist_name}',    # Artist name match
+            f'"{artist_name}"',         # Quoted exact match
+            artist_name                 # Basic search as fallback
+        ]
+        
+        seen_ids = set()
+        for strategy in search_strategies:
+            try:
+                results = self.sp.search(q=strategy, type="artist", limit=10)
+                items = results["artists"]["items"]
+                
+                for item in items:
+                    if item["id"] not in seen_ids:
+                        # Only include if the artist name actually contains our search term
+                        # This filters out irrelevant results like "Morgan Wallen" when searching "SZA"
+                        if self._is_relevant_match(item["name"], artist_name):
+                            all_items.append(item)
+                            seen_ids.add(item["id"])
+                
+                # If we found good exact matches, don't need broader searches
+                if len(all_items) >= 5 and strategy.startswith('artist:"'):
+                    break
+                    
+            except Exception as e:
+                print(f"Search strategy '{strategy}' failed: {e}")
+                continue
+        
+        # Sort by relevance score (combination of name similarity and popularity)
+        all_items = sorted(all_items, key=lambda x: self._calculate_relevance_score(x, artist_name), reverse=True)
+        
+        # Limit to top 10 most relevant results
+        items = all_items[:10]
+        
         if not items:
             print(f"No artist found for: {artist_name}")
             return None
@@ -265,3 +301,72 @@ class CreateSongMenu:
             songs_dict[i] = track
         
         return songs_dict  # Return the songs dictionary for further processing
+    
+    def _is_relevant_match(self, artist_name, search_term):
+        """
+        Check if an artist name is relevant to the search term.
+        Filters out completely unrelated artists.
+        """
+        artist_lower = artist_name.lower()
+        search_lower = search_term.lower()
+        
+        # Exact match
+        if artist_lower == search_lower:
+            return True
+        
+        # Artist name starts with search term
+        if artist_lower.startswith(search_lower):
+            return True
+        
+        # Search term is contained in artist name
+        if search_lower in artist_lower:
+            return True
+        
+        # Check if any word in artist name starts with search term
+        artist_words = artist_lower.split()
+        for word in artist_words:
+            if word.startswith(search_lower):
+                return True
+        
+        # For very short search terms (like "SZA"), be more strict
+        if len(search_term) <= 3:
+            # Only allow if search term appears as a complete word or at start of word
+            return search_lower in artist_words or any(word.startswith(search_lower) for word in artist_words)
+        
+        return False
+    
+    def _calculate_relevance_score(self, artist, search_term):
+        """
+        Calculate a relevance score for an artist based on name similarity and popularity.
+        Higher score = more relevant.
+        """
+        artist_name = artist['name'].lower()
+        search_lower = search_term.lower()
+        popularity = artist.get('popularity', 0)
+        
+        score = 0
+        
+        # Exact match gets highest score
+        if artist_name == search_lower:
+            score += 1000
+        
+        # Starts with search term
+        elif artist_name.startswith(search_lower):
+            score += 500
+        
+        # Contains search term
+        elif search_lower in artist_name:
+            score += 200
+        
+        # Word starts with search term
+        elif any(word.startswith(search_lower) for word in artist_name.split()):
+            score += 100
+        
+        # Add popularity bonus (scaled down so it doesn't override relevance)
+        score += popularity / 10
+        
+        # Penalty for very long names that don't closely match (likely irrelevant)
+        if len(artist_name) > len(search_term) * 3:
+            score -= 50
+        
+        return score
