@@ -18,6 +18,7 @@ class CallYoutube:
     def __init__(self, search_dict):
         self.artist = search_dict.get("artist", "")
         self.songs = search_dict.get("songs", [])
+        self.is_album_download = search_dict.get("is_album_download", False)  # Track if this is an album download
         
         # Get API key safely
         api_key = get_youtube_api_key()
@@ -67,6 +68,22 @@ class CallYoutube:
             print("No songs to process.")
             return []
         
+        # Ask once for the entire batch at the beginning
+        print(f"\n📋 Ready to process {len(self.songs)} song(s):")
+        for i, song_data in enumerate(self.songs, 1):
+            if isinstance(song_data, str):
+                song_name = song_data
+            else:
+                song_name = song_data.get('name', song_data)
+            print(f"  {i}. {song_name}")
+        
+        proceed = input(f"\nDo you want to download all {len(self.songs)} song(s)? (y/n): ").lower()
+        if proceed != 'y' and proceed != 'yes':
+            print("Download cancelled.")
+            return []
+        
+        print(f"\n🚀 Starting batch download of {len(self.songs)} song(s)...")
+        
         results = []
         print(f"\n🔍 Searching YouTube for {len(self.songs)} songs by {self.artist}...")
         
@@ -92,14 +109,8 @@ class CallYoutube:
                 print(f"✅ Found: {urls[0]}")
             else:
                 print("❌ No video found")
-            
-            # Ask if user wants to continue after each song (except the last one)
-            if i < len(self.songs):
-                continue_input = input("\nContinue to next song? (y/n): ").lower()
-                if continue_input != 'y' and continue_input != 'yes':
-                    print("Stopping song processing.")
-                    break
         
+        print(f"\n✅ Batch processing complete! Found videos for {sum(1 for r in results if r[0])} out of {len(results)} songs.")
         return results
 
 

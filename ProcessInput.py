@@ -101,7 +101,8 @@ class process_input:
                     search_dict = {
                         "artist": artist_info['name'], 
                         "artist_id": artist_info['id'],
-                        "songs": selected_songs_with_metadata
+                        "songs": selected_songs_with_metadata,
+                        "is_album_download": True  # Flag to indicate this is an album download
                     }
                     return search_dict
                 
@@ -153,7 +154,8 @@ class process_input:
                     search_dict = {
                         "artist": artist_info['name'], 
                         "artist_id": artist_info['id'],
-                        "songs": selected_songs_with_metadata
+                        "songs": selected_songs_with_metadata,
+                        "is_album_download": False  # Flag to indicate this is individual song download
                     }
                     return search_dict
                 
