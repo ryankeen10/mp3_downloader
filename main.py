@@ -23,13 +23,10 @@ if __name__ == "__main__":
         # Initialize YouTube searcher with the search dictionary
         youtube_searcher = CallYoutube(search_dict)
         
-        # Ask user if they want to download MP3s
-        download_mp3 = input("\nDo you want to download MP3s for these songs? (y/n): ").lower() in ['y', 'yes']
+        # Process all songs (this now includes user confirmation)
+        results = youtube_searcher.process_songs(download=False)  # Just get URLs for now
         
-        # Process all songs and get YouTube URLs
-        results = youtube_searcher.process_songs(download=False)  # Just get URLs, don't download yet
-        
-        if results and download_mp3:
+        if results:
             # Use the new MP3 downloader
             downloader = MP3Downloader()
             
@@ -68,10 +65,7 @@ if __name__ == "__main__":
                 else:
                     print(f"{i}. {artist} - {song}: ❌ No video found")
             
-            if download_mp3:
-                print("\n💿 MP3 files have been saved to the 'downloads' folder.")
-            else:
-                print("\n🔍 YouTube URLs found. Run again and select 'y' to download MP3s.")
+            print("\n💿 MP3 files have been saved to the 'downloads' folder.")
         else:
             print("❌ No YouTube videos were found or the process was canceled.")
     else:
