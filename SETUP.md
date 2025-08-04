@@ -4,6 +4,28 @@
 
 Both API credentials are **required** for the application to function properly.
 
+## Setup Methods
+
+### Docker Setup (Recommended)
+
+If using Docker, you only need to create the credential files in your project directory:
+
+```bash
+# Copy template files
+cp youtube_credentials.py.template youtube_credentials.py
+cp spotify_credentials.py.template spotify_credentials.py
+
+# Edit the files with your API keys
+nano youtube_credentials.py
+nano spotify_credentials.py
+```
+
+Docker will automatically mount these files and handle all dependencies for you!
+
+### Local Python Setup
+
+For local installation without Docker:
+
 ### YouTube Data API (Required)
 **Without this, the app cannot search for videos and will not work.**
 
@@ -36,7 +58,18 @@ nano spotify_credentials.py
 ```
 
 ## Verification
-Run `python main.py` - if you see the search menu, APIs are working!
+
+### Docker
+```bash
+docker-compose up
+```
+If you see the search menu, APIs are working!
+
+### Local Python
+```bash
+python main.py
+```
+If you see the search menu, APIs are working!
 
 ## Alternative: Environment Variables
 You can also set credentials as environment variables:

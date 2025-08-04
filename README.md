@@ -26,6 +26,38 @@ A Python application for downloading YouTube videos and converting them to MP3 f
 
 ## Installation
 
+Choose between **Docker** (recommended for easy setup) or **Local Python** installation:
+
+### Option 1: Docker Installation (Recommended)
+
+Docker provides a consistent environment with all dependencies pre-installed. No need to install Python, ffmpeg, or manage dependencies!
+
+1. **Install Docker**: Download from [docker.com](https://www.docker.com/get-started)
+
+2. **Clone this repository**:
+```bash
+git clone <your-repo-url>
+cd mp3_downloader
+```
+
+3. **Set up API credentials** - See [SETUP.md](SETUP.md) for detailed instructions:
+   - Create `youtube_credentials.py` and `spotify_credentials.py` files
+   - Both YouTube and Spotify API credentials are REQUIRED
+
+4. **Run with Docker**:
+```bash
+# Start the application
+docker-compose up
+
+# Or run directly
+docker run -it --rm \
+  -v $(pwd):/app/credentials \
+  -v ~/Downloads:/app/downloads \
+  mp3-downloader
+```
+
+### Option 2: Local Python Installation
+
 1. Clone this repository
 2. Create a virtual environment:
 ```bash
@@ -48,6 +80,27 @@ pip install yt-dlp google-api-python-client
    - Spotify API credentials
 
 ## Usage
+
+### Docker Usage (Recommended)
+
+```bash
+# Interactive mode with search
+docker-compose up
+
+# Direct URL download
+docker run -it --rm \
+  -v $(pwd):/app/credentials \
+  -v ~/Downloads:/app/downloads \
+  mp3-downloader python mp3_downloader.py "https://www.youtube.com/watch?v=VIDEO_ID"
+
+# With custom artist and song names
+docker run -it --rm \
+  -v $(pwd):/app/credentials \
+  -v ~/Downloads:/app/downloads \
+  mp3-downloader python mp3_downloader.py "URL" "Artist Name" "Song Title"
+```
+
+### Local Python Usage
 
 ### Interactive Mode (with search)
 ```bash

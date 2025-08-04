@@ -1,0 +1,43 @@
+# Git and version control
+.git
+.gitignore
+
+# Documentation (copied separately if needed)
+*.md
+
+# Python cache and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+
+# Downloads and test files
+downloads/
+test_downloads/
+*.mp3
+*.webm
+*.m4a
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files (to avoid recursion)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Credentials (mounted at runtime)
+*credentials.py
+.cache
+.spotify_cache

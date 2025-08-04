@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mp3-downloader:
+    build: .
+    container_name: mp3-downloader
+    volumes:
+      # Mount downloads to user's Downloads folder
+      - ~/Downloads/Audio Downloads:/downloads
+      # Mount credentials (user must create these first)
+      - ./youtube_credentials.py:/app/youtube_credentials.py:ro
+      - ./spotify_credentials.py:/app/spotify_credentials.py:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    stdin_open: true
+    tty: true
+    restart: "no"
